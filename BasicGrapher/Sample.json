@@ -1,0 +1,21 @@
+{
+  "titles": [
+    "MyChartTitle",
+    "testing123"
+  ],
+  "size": {
+    "height": 400,
+    "width": 600
+  },
+  "series": {
+    "series1": {
+      "point1": 1
+    },
+    "series2": {
+      "aa": 5
+    },
+    "series3": {
+      "asdasd": 15
+    }
+  }
+}
