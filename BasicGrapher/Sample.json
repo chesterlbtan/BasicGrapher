@@ -1,21 +1,41 @@
 {
-  "titles": [
-    "MyChartTitle",
-    "testing123"
-  ],
+  "titles": "MyTitle",
   "size": {
     "height": 400,
     "width": 600
   },
-  "series": {
-    "series1": {
-      "point1": 1
-    },
-    "series2": {
-      "aa": 5
-    },
-    "series3": {
-      "asdasd": 15
+  "chartareas": [
+    {
+      "axisx": {
+        "title": "axisX name",
+        "interval": 1
+      },
+      "axisy": {
+        "title": "axisY name"
+      }
     }
-  }
+  ],
+  "series": [
+    {
+      "points": [
+        {
+          "axislabel": "x0",
+          "yvalues": [ 9 ]
+        },
+        {
+          "axislabel": "x1",
+          "yvalues": [ 10 ]
+        },
+        {
+          "axislabel": "x2",
+          "yvalues": [ 8 ]
+        },
+        {
+          "axislabel": "x3",
+          "yvalues": [ 5 ]
+        }
+      ],
+      "xvaluetype": "String"
+    }
+  ]
 }

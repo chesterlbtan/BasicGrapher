@@ -8,7 +8,7 @@ namespace BasicGrapher
 {
     public class MyJSON
     {
-        private JsonStruct _value;
+        internal JsonStruct _value;
 
         public MyJSON(string strJson)
         {
@@ -17,6 +17,11 @@ namespace BasicGrapher
 
         public JsonStruct this[string key]
         { get { return _value[key]; } }
+
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
 
         public class JsonStruct
         {
@@ -29,7 +34,7 @@ namespace BasicGrapher
             }
 
             private Dictionary<string, JsonStruct> __jsonDict = new Dictionary<string, JsonStruct>();
-            private List<string> __jsonArray = new List<string>();
+            private List<JsonStruct> __jsonArray = new List<JsonStruct>();
             private string __jsonString;
             private int __jsonInteger;
 
@@ -87,9 +92,12 @@ namespace BasicGrapher
                         strReturn += "}";
                         break;
                     case JsonType.Array:
-                        strReturn += "[\"";
-                        strReturn += string.Join("\", \"", __jsonArray.ToArray());
-                        strReturn += "\"]";
+                        strReturn += "[";
+                        List<string> tmpArray = new List<string>();
+                        foreach (JsonStruct item in __jsonArray)
+                            tmpArray.Add(item.ToString());
+                        strReturn += string.Join(", ", tmpArray.ToArray());
+                        strReturn += "]";
                         break;
                     default:
                         break;
@@ -100,6 +108,7 @@ namespace BasicGrapher
             private void _decode(string strJson)
             {
                 string[] _keyValItems;
+                string[] _arrayItems;
 
                 strJson = strJson.Trim(' ');
                 switch (strJson[0])
@@ -117,9 +126,9 @@ namespace BasicGrapher
                         break;
                     case '[':
                         Type = JsonType.Array;
-                        string[] arrItems = strJson.Trim(' ', '[', ']').Split(',');
-                        foreach (string item in arrItems)
-                            __jsonArray.Add(item.Trim(' ','\"'));
+                        _arrayItems = GetKeyItemPairs(strJson.TrimStart('[').TrimEnd(']').Trim(' '));
+                        foreach (string item in _arrayItems)
+                            __jsonArray.Add(new JsonStruct(item));
                         break;
                     case '\"':
                         Type = JsonType.String;
