@@ -1,5 +1,15 @@
 {
-  "titles": "MyTitle",
+  "titles": [
+    {
+      "docking": "Top",
+      "text": "MyTitle",
+      "font": {
+        "fontname": "Courier New",
+        "size": 16,
+        "style": [ "Bold", "Underline" ]
+      }
+    }
+  ],
   "size": {
     "height": 400,
     "width": 600

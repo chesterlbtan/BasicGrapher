@@ -26,14 +26,27 @@ namespace BasicGrapher
         private Chart ConvertToChart()
         {
             Chart dummy = new Chart();
-            dummy.Titles.Add((string)_value["titles"].Value);
+            foreach (var json_title in (List<JsonStruct>)_value["titles"].Value)
+            {
+                Title tmpTitle = new Title();
+                tmpTitle.Text = (string)json_title["text"].Value;
+                tmpTitle.Docking = (Docking)Enum.Parse(typeof(Docking), (string)json_title["docking"].Value);
+                if (json_title.ContainsKey("font"))
+                    tmpTitle.Font = GetFont(json_title["font"]);
+                dummy.Titles.Add(tmpTitle);
+            }
+
             dummy.Size = new System.Drawing.Size((int)_value["size"]["width"].Value, (int)_value["size"]["height"].Value);
             foreach (var json_chrtArea in (List<JsonStruct>)_value["chartareas"].Value)
             {
                 ChartArea tmpChrtArea = new ChartArea();
                 tmpChrtArea.AxisX.Title = (string)json_chrtArea["axisx"]["title"].Value;
+                if (json_chrtArea["axisx"].ContainsKey("font"))
+                    tmpChrtArea.AxisX.TitleFont = GetFont(json_chrtArea["axisx"]["font"]);
                 tmpChrtArea.AxisX.Interval = (int)json_chrtArea["axisx"]["interval"].Value;
                 tmpChrtArea.AxisY.Title = (string)json_chrtArea["axisy"]["title"].Value;
+                if (json_chrtArea["axisy"].ContainsKey("font"))
+                    tmpChrtArea.AxisY.TitleFont = GetFont(json_chrtArea["axisy"]["font"]);
                 dummy.ChartAreas.Add(tmpChrtArea);
             }
             foreach (var json_series in (List<JsonStruct>)_value["series"].Value)
@@ -54,6 +67,28 @@ namespace BasicGrapher
             }
             
             return dummy;
+        }
+
+        private System.Drawing.Font GetFont(JsonStruct json_font)
+        {
+            System.Drawing.Font tmpFont;
+            try
+            {
+                tmpFont = new System.Drawing.Font((string)json_font["fontname"].Value, (int)json_font["size"].Value);
+                if (json_font.ContainsKey("style"))
+                {
+                    System.Drawing.FontStyle tmpStyle = System.Drawing.FontStyle.Regular;
+                    foreach (var x in (List<JsonStruct>)json_font["style"].Value)
+                        tmpStyle |= (System.Drawing.FontStyle)Enum.Parse(typeof(System.Drawing.FontStyle), (string)x.Value);
+                    tmpFont = new System.Drawing.Font(tmpFont, tmpStyle);
+                }
+            }
+            catch (ArgumentException argex)
+            {
+
+                throw;
+            }
+            return tmpFont;
         }
     }
 }

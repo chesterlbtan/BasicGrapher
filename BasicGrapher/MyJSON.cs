@@ -105,6 +105,11 @@ namespace BasicGrapher
                 return strReturn;
             }
 
+            public bool ContainsKey(string strKey)
+            {
+                return __jsonDict.ContainsKey(strKey);
+            }
+
             private void _decode(string strJson)
             {
                 string[] _keyValItems;
