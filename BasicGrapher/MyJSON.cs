@@ -118,7 +118,7 @@ namespace BasicGrapher
                         _keyValItems = GetKeyItemPairs(strJson.TrimStart('{').TrimEnd('}').Trim(' '));
                         foreach (string keyVal in _keyValItems)
                         {
-                            string _key = keyVal.Split(':')[0].Trim('\"');
+                            string _key = keyVal.Split(':')[0].Trim('\"', '\'');
                             string _val = keyVal.Remove(0, keyVal.IndexOf(':') + 1);
                             __jsonDict.Add(_key, new JsonStruct(_val));
                         }
@@ -131,8 +131,9 @@ namespace BasicGrapher
                             __jsonArray.Add(new JsonStruct(item));
                         break;
                     case '\"':
+                    case '\'':
                         Type = JsonType.String;
-                        __jsonString = strJson.Trim('\"');
+                        __jsonString = strJson.Trim('\"', '\'');
                         break;
                     case '0':
                     case '1':
