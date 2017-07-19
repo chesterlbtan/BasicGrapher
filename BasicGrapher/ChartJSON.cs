@@ -30,7 +30,8 @@ namespace BasicGrapher
             {
                 Title tmpTitle = new Title();
                 tmpTitle.Text = (string)json_title["text"].Value;
-                tmpTitle.Docking = (Docking)Enum.Parse(typeof(Docking), (string)json_title["docking"].Value);
+                if (json_title.ContainsKey("docking"))
+                    tmpTitle.Docking = (Docking)Enum.Parse(typeof(Docking), (string)json_title["docking"].Value);
                 if (json_title.ContainsKey("font"))
                     tmpTitle.Font = GetFont(json_title["font"]);
                 dummy.Titles.Add(tmpTitle);
