@@ -46,7 +46,9 @@ namespace BasicGrapher
             }
             catch (Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.Message + "\n" + ex.StackTrace, "Error");
+                Console.WriteLine("BasicGrapher Error: " + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                Environment.Exit(-1);
             }
         }
     }
