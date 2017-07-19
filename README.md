@@ -10,13 +10,23 @@ BasicGrapher <json_file> <image_name>
 ```
 <*json_file*> determines the format of the chart. See below for sample or see code *Sample.json*.
 
-<*image_name*> determines the output image file name without the extension name. *.png is automatically added in the code.
+<*image_name*> determines the output image full file name.
 
 ## Sample <*json_file*>
 The <*json_file*> follows the Chart Object of the VB.NET
 ```json
 {
-  "titles": "MyTitle",
+  "titles": [
+    {
+      "docking": "Top",
+      "text": "MyTitle",
+      "font": {
+        "fontname": "Courier New",
+        "size": 16,
+        "style": [ "Bold", "Underline" ]
+      }
+    }
+  ],
   "size": {
     "height": 400,
     "width": 600
