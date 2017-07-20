@@ -34,6 +34,8 @@ namespace BasicGrapher
                     tmpTitle.Docking = (Docking)Enum.Parse(typeof(Docking), (string)json_title["docking"].Value);
                 if (json_title.ContainsKey("font"))
                     tmpTitle.Font = GetFont(json_title["font"]);
+                if (json_title.ContainsKey("forecolor"))
+                    tmpTitle.ForeColor = GetColor((string)json_title["forecolor"].Value);
                 dummy.Titles.Add(tmpTitle);
             }
 
@@ -44,10 +46,27 @@ namespace BasicGrapher
                 tmpChrtArea.AxisX.Title = (string)json_chrtArea["axisx"]["title"].Value;
                 if (json_chrtArea["axisx"].ContainsKey("font"))
                     tmpChrtArea.AxisX.TitleFont = GetFont(json_chrtArea["axisx"]["font"]);
-                tmpChrtArea.AxisX.Interval = (int)json_chrtArea["axisx"]["interval"].Value;
+                if (json_chrtArea["axisx"].ContainsKey("forecolor"))
+                    tmpChrtArea.AxisX.TitleForeColor = GetColor((string)json_chrtArea["axisx"]["forecolor"].Value);
+                if (json_chrtArea["axisx"].ContainsKey("minimum"))
+                    tmpChrtArea.AxisX.Minimum = (int)json_chrtArea["axisx"]["minimum"].Value;
+                if (json_chrtArea["axisx"].ContainsKey("maximum"))
+                    tmpChrtArea.AxisX.Maximum = (int)json_chrtArea["axisx"]["maximum"].Value;
+                if (json_chrtArea["axisx"].ContainsKey("interval"))
+                    tmpChrtArea.AxisX.Interval = (int)json_chrtArea["axisx"]["interval"].Value;
+
                 tmpChrtArea.AxisY.Title = (string)json_chrtArea["axisy"]["title"].Value;
                 if (json_chrtArea["axisy"].ContainsKey("font"))
                     tmpChrtArea.AxisY.TitleFont = GetFont(json_chrtArea["axisy"]["font"]);
+                if (json_chrtArea["axisy"].ContainsKey("forecolor"))
+                    tmpChrtArea.AxisY.TitleForeColor = GetColor((string)json_chrtArea["axisy"]["forecolor"].Value);
+                if (json_chrtArea["axisy"].ContainsKey("minimum"))
+                    tmpChrtArea.AxisY.Minimum = (int)json_chrtArea["axisy"]["minimum"].Value;
+                if (json_chrtArea["axisy"].ContainsKey("maximum"))
+                    tmpChrtArea.AxisY.Maximum = (int)json_chrtArea["axisy"]["maximum"].Value;
+                if (json_chrtArea["axisy"].ContainsKey("interval"))
+                    tmpChrtArea.AxisY.Interval = (int)json_chrtArea["axisy"]["interval"].Value;
+
                 dummy.ChartAreas.Add(tmpChrtArea);
             }
             foreach (var json_series in (List<JsonStruct>)_value["series"].Value)
@@ -90,6 +109,11 @@ namespace BasicGrapher
                 throw;
             }
             return tmpFont;
+        }
+
+        private System.Drawing.Color GetColor(string json_color)
+        {
+            return (System.Drawing.Color)Enum.Parse(typeof(System.Drawing.Color), json_color);
         }
     }
 }
