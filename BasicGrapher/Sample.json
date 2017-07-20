@@ -7,7 +7,8 @@
         "fontname": "Courier New",
         "size": 16,
         "style": [ "Bold", "Underline" ]
-      }
+      },
+      "forecolor":  "Blue"
     }
   ],
   "size": {
@@ -18,7 +19,8 @@
     {
       "axisx": {
         "title": "axisX name",
-        "interval": 1
+        "interval": 1,
+        "forecolor": "Red"
       },
       "axisy": {
         "title": "axisY name"
