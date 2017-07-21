@@ -14,9 +14,23 @@ namespace BasicGrapher
             a(obj);
         }
 
-        public static T GetEnum<T>(MyJSON.JsonStruct input)
+        public static void SetEnum<T>(this T obj, MyJSON.JsonStruct input)
         {
-            return (T)Enum.Parse(typeof(T), (string)input.Value);
+            obj = SetEnum<T>(input);
+        }
+        public static T SetEnum<T>(MyJSON.JsonStruct input)
+        {
+            try
+            {
+                return (T)Enum.Parse(typeof(T), (string)input.Value);
+            }
+            catch (ArgumentException argex)
+            {
+                Console.WriteLine("ArgumentException: " + argex.Message);
+                Console.WriteLine("The key \"" + input.ParentName + "\" can only have these values below:");
+                Console.WriteLine(string.Join("\n", Enum.GetNames(typeof(T))));
+                throw argex;
+            }
         }
     }
     class ChartJSON : MyJSON
@@ -46,7 +60,7 @@ namespace BasicGrapher
                     Title tmpTitle = new Title();
                     tmpTitle.Text = (string)json_title["text"].Value;
                     if (json_title.ContainsKey("docking"))
-                        tmpTitle.Docking = (Docking)Enum.Parse(typeof(Docking), (string)json_title["docking"].Value);
+                        tmpTitle.Docking.SetEnum(json_title["docking"]);
                     if (json_title.ContainsKey("font"))
                         tmpTitle.Font = GetFont(json_title["font"]);
                     if (json_title.ContainsKey("forecolor"))
@@ -95,9 +109,9 @@ namespace BasicGrapher
                                     if (json_xLblStyle.ContainsKey("intervaloffset"))
                                         xLabelStyle.IntervalOffset = (int)json_xLblStyle["intervaloffset"].Value;
                                     if (json_xLblStyle.ContainsKey("intervaloffsettype"))
-                                        xLabelStyle.IntervalOffsetType = Extension.GetEnum<DateTimeIntervalType>(json_xLblStyle["intervaloffsettype"]);
+                                        xLabelStyle.IntervalOffsetType.SetEnum(json_xLblStyle["intervaloffsettype"]);
                                     if (json_xLblStyle.ContainsKey("intervaltype"))
-                                        xLabelStyle.IntervalType = Extension.GetEnum<DateTimeIntervalType>(json_xLblStyle["intervaltype"]);
+                                        xLabelStyle.IntervalType.SetEnum(json_xLblStyle["intervaltype"]);
                                     if (json_xLblStyle.ContainsKey("isendlabelvisible"))
                                         xLabelStyle.IsEndLabelVisible = (bool)json_xLblStyle["isendlabelvisible"].Value;
                                     if (json_xLblStyle.ContainsKey("isstaggered"))
@@ -142,9 +156,9 @@ namespace BasicGrapher
                                     if (json_yLblStyle.ContainsKey("intervaloffset"))
                                         yLabelStyle.IntervalOffset = (int)json_yLblStyle["intervaloffset"].Value;
                                     if (json_yLblStyle.ContainsKey("intervaloffsettype"))
-                                        yLabelStyle.IntervalOffsetType = Extension.GetEnum<DateTimeIntervalType>(json_yLblStyle["intervaloffsettype"]);
+                                        yLabelStyle.IntervalOffsetType.SetEnum(json_yLblStyle["intervaloffsettype"]);
                                     if (json_yLblStyle.ContainsKey("intervaltype"))
-                                        yLabelStyle.IntervalType = Extension.GetEnum<DateTimeIntervalType>(json_yLblStyle["intervaltype"]);
+                                        yLabelStyle.IntervalType.SetEnum(json_yLblStyle["intervaltype"]);
                                     if (json_yLblStyle.ContainsKey("isendlabelvisible"))
                                         yLabelStyle.IsEndLabelVisible = (bool)json_yLblStyle["isendlabelvisible"].Value;
                                     if (json_yLblStyle.ContainsKey("isstaggered"))
@@ -170,7 +184,7 @@ namespace BasicGrapher
                         tmpPoint.YValues = tmpYvalues.ToArray();
                         tmpSeries.Points.Add(tmpPoint);
                     }
-                    tmpSeries.XValueType = (ChartValueType)Enum.Parse(typeof(ChartValueType), (string)json_series["xvaluetype"].Value);
+                    tmpSeries.XValueType.SetEnum(json_series["xvaluetype"]);
                     dummy.Series.Add(tmpSeries);
                 }
             });
@@ -179,22 +193,13 @@ namespace BasicGrapher
 
         private System.Drawing.Font GetFont(JsonStruct json_font)
         {
-            System.Drawing.Font tmpFont;
-            try
+            System.Drawing.Font tmpFont = new System.Drawing.Font((string)json_font["fontname"].Value, (int)json_font["size"].Value);
+            if (json_font.ContainsKey("style"))
             {
-                tmpFont = new System.Drawing.Font((string)json_font["fontname"].Value, (int)json_font["size"].Value);
-                if (json_font.ContainsKey("style"))
-                {
-                    System.Drawing.FontStyle tmpStyle = System.Drawing.FontStyle.Regular;
-                    foreach (var x in (List<JsonStruct>)json_font["style"].Value)
-                        tmpStyle |= (System.Drawing.FontStyle)Enum.Parse(typeof(System.Drawing.FontStyle), (string)x.Value);
-                    tmpFont = new System.Drawing.Font(tmpFont, tmpStyle);
-                }
-            }
-            catch (ArgumentException argex)
-            {
-
-                throw;
+                System.Drawing.FontStyle tmpStyle = System.Drawing.FontStyle.Regular;
+                foreach (var x in (List<JsonStruct>)json_font["style"].Value)
+                    tmpStyle |= Extension.SetEnum<System.Drawing.FontStyle>(x);
+                tmpFont = new System.Drawing.Font(tmpFont, tmpStyle);
             }
             return tmpFont;
         }

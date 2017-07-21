@@ -12,7 +12,7 @@ namespace BasicGrapher
 
         public MyJSON(string strJson)
         {
-            _value = new JsonStruct(strJson.Replace('\n', ' ').Replace('\r', ' '));
+            _value = new JsonStruct("root", strJson.Replace('\n', ' ').Replace('\r', ' '));
         }
 
         public JsonStruct this[string key]
@@ -38,8 +38,9 @@ namespace BasicGrapher
             private string __jsonString;
             private int __jsonInteger;
 
-            public JsonStruct(string strJson)
+            public JsonStruct(string parentName, string strJson)
             {
+                ParentName = parentName;
                 _decode(strJson);
             }
 
@@ -50,6 +51,7 @@ namespace BasicGrapher
                     return __jsonDict[key];
                 }
             }
+            public string ParentName { get; private set; }
             public JsonType Type { get; private set; }
             public object Value
             {
@@ -125,7 +127,7 @@ namespace BasicGrapher
                         {
                             string _key = keyVal.Split(':')[0].Trim('\"', '\'');
                             string _val = keyVal.Remove(0, keyVal.IndexOf(':') + 1);
-                            __jsonDict.Add(_key, new JsonStruct(_val));
+                            __jsonDict.Add(_key, new JsonStruct(_key, _val));
                         }
                         _keyValItems = null;
                         break;
@@ -133,7 +135,7 @@ namespace BasicGrapher
                         Type = JsonType.Array;
                         _arrayItems = GetKeyItemPairs(strJson.TrimStart('[').TrimEnd(']').Trim(' '));
                         foreach (string item in _arrayItems)
-                            __jsonArray.Add(new JsonStruct(item));
+                            __jsonArray.Add(new JsonStruct(ParentName, item));
                         break;
                     case '\"':
                     case '\'':
