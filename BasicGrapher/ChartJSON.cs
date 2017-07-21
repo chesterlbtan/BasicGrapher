@@ -29,7 +29,7 @@ namespace BasicGrapher
                 Console.WriteLine("ArgumentException: " + argex.Message);
                 Console.WriteLine("The key \"" + input.ParentName + "\" can only have these values below:");
                 Console.WriteLine(string.Join("\n", Enum.GetNames(typeof(T))));
-                throw argex;
+                throw;
             }
         }
     }
